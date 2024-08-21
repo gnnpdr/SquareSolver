@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <math.h>
+#include <ctype.h>
+#include <assert.h>
 
-int check_digit (double* a);
+int scan (double* a);
 int clean_buffer(void);
+int check(double* a);
 
 int solve (double a, double b, double c, double* x1, double* x2);
 
@@ -14,15 +17,19 @@ int main()
     printf("Enter coefficients for solving a equation\n");
     double a = 0, b = 0, c = 0;
 
-    check_digit (&a);
-    check_digit (&b);
-    check_digit (&c);
 
-    double x1 = 0, x2 = 0; // отдельно ввод, вывод и другое
+    scan(&a);
+    scan(&b);
+    scan(&c);
+    printf ("%lg %lg %lg", a, b, c);
+
+    double x1 = 0, x2 = 0; // #отдельно ввод, вывод и другое
     int nroots = solve( a, b, c, &x1, &x2);
 
     enum num_of_roots {zero_roots, one_root, two_roots};
+
     switch (nroots){
+
         case zero_roots: printf ("no roots\n"); //добавить константу на указатель
                 break;
         case one_root: printf ("x = %lg\n", x1);
@@ -33,13 +40,25 @@ int main()
                 break;
         default: printf("error\n");
                 return 1;
+
     return 0;
     }
 }
-int solve(double a, double b, double c, double* x1, double* x2){
-    if (a == 0){     // функция для проверки точности
+int solve(double a, double b, double c, double* x1, double* x2){   //функция solve решает квадратное уравнение
+
+    assert(isfinite(a));
+    assert(isfinite(b));
+    assert(isfinite(c));
+
+    assert(x1 != NULL);
+    assert(x2 != NULL);
+    assert(x1 != x2);
+
+    enum num_of_roots {zero_roots, one_root, two_roots};
+
+    if (a == 0){     //!! #функция для проверки точности
         if (b == 0){
-            return (c == 0)? INF_ROOTS: 0; // isfinite, нулевые указатели, не равны ли они
+            return (c == 0)? INF_ROOTS: zero_roots;
         }
         else{
             *x1 = -c/b;
@@ -51,7 +70,8 @@ int solve(double a, double b, double c, double* x1, double* x2){
 
         if (diskr == 0){
             *x1 = *x2 = -b/ (2*a);
-            return 1; // заменить на enum
+
+            return one_root;
         }
         else if (diskr < 0) {
             return 0;
@@ -59,21 +79,39 @@ int solve(double a, double b, double c, double* x1, double* x2){
         else{
             *x1 = (-b + sqrt(diskr))/(2*a);
             *x2 = (-b - sqrt(diskr))/(2*a);
-            return 2;
+            return two_roots;
         }
     }
 }
-int check_digit(double* a){ // комментарии к функции
-    while (scanf("%lg", a) != 1) {
-        clean_buffer();
-        printf("enter coefficient as number\n");
+int scan (double* a)
+{
+    while (check(a) != 0)
+    {
+    printf("enter new\n");
+    }
+    return 0;
+}
+int check(double* a){
+
+    scanf("%lg", a);
+    int ch = 0;
+
+    while (ch != '\n')
+    {
+        ch = getchar();
+        if (isalpha(ch))
+        {
+            clean_buffer();
+            return 1;
+        }
+
     }
     return 0;
 }
 
-int clean_buffer(){
-    while (getchar() != '\0'){ // упример 12апол
+int clean_buffer(){ //функция clean_buffer чистит поток ввода
+    while (getchar() != '\n'){
     }
     return 0;
 }
-// условие на выход из программы
+// #условие на выход из программы
