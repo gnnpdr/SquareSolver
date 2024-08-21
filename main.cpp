@@ -19,6 +19,8 @@ int solvation_of_square_equation (double a, double b, double c, double* x1, doub
 
 int output (int a, double x1, double x2);
 
+int unitest (int test_num, double a, double b, double c, double x1_expected, double x2_expected, int nroots_expected);
+
 const int INF_ROOTS = -1;
 
 int main()
@@ -36,6 +38,12 @@ int main()
 
     output (nroots, x1, x2);
 
+    unitest(1, 1, -5, 6, 3, 2, 2);         //two_roots_case
+    unitest(2, 1, -4, 4, 2, 2, 1);         //one_root_case
+    unitest(3, 1, 2, 4, 0, 0, 0);          //zero_roots_case
+    unitest(4, 1, 1.5, 0.5, -0.5, -1, 2);  //float_coefficients_case
+    unitest(5, 0, 0, 0 ,0, 0, -1);         //inf_answer_case
+
     return 0;
 }
 
@@ -49,7 +57,7 @@ int solve(double a, double b, double c, double* x1, double* x2){
     assert(x2 != NULL);
     assert(x1 != x2);
 
-    if (a == 0)
+    if (a == 0)     //!! #функция для проверки точности
             solvation_of_linear_equation (b, c, x1);
 
     else
@@ -127,6 +135,7 @@ int solvation_of_linear_equation (double b, double c, double* x1){
 }
 
 int solvation_of_square_equation (double a, double b, double c, double* x1, double* x2){
+
     double diskr = b*b - 4*a*c;
 
         if (diskr == 0){
@@ -142,4 +151,16 @@ int solvation_of_square_equation (double a, double b, double c, double* x1, doub
             *x2 = (-b - sqrt(diskr))/(2*a);
             return two_roots;
         }
+}
+
+int unitest (int test_num, double a, double b, double c, double x1_expected, double x2_expected, int nroots_expected) {
+    double x1 = 0, x2 = 0;
+
+    int nroots = solve(a, b, c, &x1, &x2);
+    if (nroots != nroots_expected || x1 != x1_expected || x2 != x2_expected) {
+        printf("error test %d: a = %lg, b = %lg, c = %lg, x1 = %lg, x2 = %lg, nroots = %d\n"
+        "expected x1 = %lg, x2 = %lg, nroots = %d\n",
+        test_num, a, b, c, x1, x2, nroots,
+        x1_expected, x2_expected, nroots_expected);
+    }
 }
