@@ -4,33 +4,38 @@
 #include <assert.h>
 #define TEST
 
-struct DataForChecking {
-            int testnum;
+struct DataForSolvingEquetions {
+    int testnum;
 
-            double a;
-            double b;
-            double c;
+    double a;
+    double b;
+    double c;
 
-            double x1_expected;
-            double x2_expected;
+    double x1;
+    double x2;
 
-            int nroots_expected;
+    int nroots;
     };
 
-struct DataForSolvingEquetions {
-            double a;
-            double b;
-            double c;
+struct DataForChecking {
+    int testnum;
 
-            double* x1;
-            double* x2;
+    double a;
+    double b;
+    double c;
+
+    double x1_exp;
+    double x2_exp;
+
+    int nroots;
+
 };
 
 enum NumOfRoots {
-    INF_ROOTS,
     ZERO_ROOTS,
     ONE_ROOT,
     TWO_ROOTS,
+    INF_ROOTS = -1,
     ERROR};
 
 enum Difference {
@@ -39,7 +44,7 @@ enum Difference {
     EQUAL
 };
 
-int getting_coefficients (double *const a, double *const b, double *const c);
+int getting_coefficients (DataForSolvingEquetions* fulldataforsolving);
 
 int control_of_input_reload_if_error (double *const a);
 bool checking_symbols (double *const a); 
@@ -47,63 +52,52 @@ int clean_buffer (void);
 
 Difference comparing_doubles (const double a, const double b);
 
-int solvation_of_equation (const double a, const double b, const double c, double *const x1, double *const x2);
+int solvation_of_equation (DataForSolvingEquetions* fulldataforsolving);
 
-int solvation_of_linear_equation (const double b, const double c, double *const x1);
-NumOfRoots solvation_of_square_equation (const double a, const double b, const double c, double *const x1, double *const x2);
+int solvation_of_linear_equation (DataForSolvingEquetions* fulldataforsolving);
+int solvation_of_square_equation (DataForSolvingEquetions* fulldataforsolving);
 
 int getting_greater_root (double* x1, double* x2);
 
-NumOfRoots getting_the_answer (const int a, double x1, double x2);
+int getting_the_answer (DataForSolvingEquetions* fulldataforsolving);
 
-int filling_out_the_structure_tests(struct Tests);
-int unittest (struct DataForChecking);
+int initialising_structure(DataForSolvingEquetions* fulldataforsolving);
+int unittest (DataForSolvingEquetions* fulldataforsolving);
 int launch_tests ();
+int swap_roots (double* x1, double* x2);
 
-const int INF_ROOTS = -1;
-const double EPS = 1e-10;
-const int AMOUNT_OF_TESTS = 5;
+const double EPS             = 1e-10;
+const int    AMOUNT_OF_TESTS =     5;
 
 int main()
 {
+    DataForSolvingEquetions fulldataforsolving = {};
 
-    printf("Enter coefficients for solving a equation\n");
+    initialising_structure(&fulldataforsolving);
 
-    double a = 0, b = 0, c = 0;
-    
+    getting_coefficients(&fulldataforsolving); 
 
-    getting_coefficients(&a, &b, &c); 
+    solvation_of_equation(&fulldataforsolving);
 
-    double x1 = 0, x2 = 0;
-    int nroots = solvation_of_equation(a, b, c, &x1, &x2);
+    getting_the_answer (&fulldataforsolving);
 
-    getting_the_answer (nroots, x1, x2);
-
-    struct DataForSolvingEquetions fulldataforsolving;
-
-    filling_out_the_structure_tests(fulldataforsolving);
-
-
+    #ifdef TEST
     launch_tests ();
+    #endif
 
     return 0;
 }
 
-int solvation_of_equation(const double a, const double b, const double c, double *const x1, double *const x2){
+int solvation_of_equation(DataForSolvingEquetions* fulldataforsolving){
 
-    assert(isfinite(a));
-    assert(isfinite(b));
-    assert(isfinite(c));
+    assert(fulldataforsolving != nullptr);
 
-    assert(x1 != nullptr);
-    assert(x2 != nullptr);
-    assert(x1 != x2);
 
-    if (comparing_doubles(a, 0) == EQUAL)     
-            solvation_of_linear_equation (b, c, x1);
+    if (comparing_doubles(fulldataforsolving->a, 0) == EQUAL)     
+            solvation_of_linear_equation (fulldataforsolving);
 
     else
-            solvation_of_square_equation (a, b, c, x1, x2);
+            solvation_of_square_equation (fulldataforsolving);
 
 
 }
@@ -112,9 +106,9 @@ int control_of_input_reload_if_error (double *const a){
 
     assert(a != nullptr);
 
-    while (checking_symbols (a) != true)
+    while (checking_symbols (a) == true)
     {
-    printf("enter new\n");
+        printf("enter new\n");
     }
     return 0;
 }
@@ -123,21 +117,27 @@ bool checking_symbols(double *const a){
 
     assert(a != nullptr);
 
-    bool symbol_is_alpfa = true;
+    bool symbol_is_alpfa = false;
 
-    scanf("%lg", a);
+    printf("scanf output: %d\n", scanf("%lg", a));
+
+    printf("-> %lg\n", *a);
+
     int ch = 0;
 
-    while (ch != '\n' || ch != EOF)
+    while (ch != '\n' && ch != EOF)
     {
+        // printf("%c", ch);
+        // printf("%c", ch);
+        // if (isalpha(ch))
+        // {
+        //     symbol_is_alpfa == false;
+        //     return symbol_is_alpfa;
+        // }
         ch = getchar();
-        if (isalpha(ch))
-        {
-            symbol_is_alpfa == false;
-            return symbol_is_alpfa;
-        }
 
     }
+    printf("true\n");
     return symbol_is_alpfa;
 }
 
@@ -150,114 +150,138 @@ int clean_buffer(){
     return 0;
 }
 
-int getting_coefficients (double *const a, double *const b, double *const c){
+int getting_coefficients (DataForSolvingEquetions* fulldataforsolving){
 
-    assert(a != nullptr);
-    assert(b != nullptr);
-    assert(c != nullptr);
+    assert(fulldataforsolving != nullptr);
 
-    control_of_input_reload_if_error(a);
-    control_of_input_reload_if_error(b);
-    control_of_input_reload_if_error(c);
+    double a = 0, b = 0, c = 0;
 
+    printf("Enter coefficients for solving a equation\n");
+
+    control_of_input_reload_if_error(&a);
+    control_of_input_reload_if_error(&b);
+    control_of_input_reload_if_error(&c);
+
+    printf("%lg %lg %lg", a, b, c);
+
+    fulldataforsolving->a = a;
+    fulldataforsolving->b = b;
+    fulldataforsolving->c = c;
+    
+    
     return 0;
 }
 
-NumOfRoots getting_the_answer (const int nroots, double x1, double x2){
+int getting_the_answer (DataForSolvingEquetions* fulldataforsolving){
 
-    assert(isfinite(nroots));
-    assert(isfinite(x1));
-    assert(isfinite(x2));
+    assert(fulldataforsolving != nullptr);
 
-
-    switch (nroots){
+    switch (fulldataforsolving->nroots){
 
         case ZERO_ROOTS: printf ("no roots\n");
                          break;
 
-        case ONE_ROOT: printf ("x = %lg\n", x1);
-                       break;
-        case TWO_ROOTS:
+        case ONE_ROOT:   printf ("x = %lg\n", fulldataforsolving->x1);
+                         break;
 
-            getting_greater_root (&x1, &x2);
-
-            printf ("x1 = %lg, x2 = %lg\n", x1, x2);
-            break;
-        case INF_ROOTS: printf("any number\n");
-                        break;
-        default: printf("error\n");
-                 return ERROR;
+        case TWO_ROOTS:  getting_greater_root (&fulldataforsolving->x1, &fulldataforsolving->x2);
+                         printf ("x1 = %lg, x2 = %lg\n", fulldataforsolving->x1, fulldataforsolving->x2);
+                         break;
+        case INF_ROOTS:  printf("any number\n");
+                         break;
+        default:         printf("error\n");
     }
+    return 0;
 }
 
-int solvation_of_linear_equation (const double b, const double c, double *const x1){
+int solvation_of_linear_equation (DataForSolvingEquetions* fulldataforsolving){
 
-    assert(isfinite(b));
-    assert(isfinite(c));
+    assert(fulldataforsolving != nullptr);
 
-    assert(x1 != nullptr);
+    int nroots = 0;
 
-    if (comparing_doubles(b, 0) == EQUAL)
-            return (comparing_doubles(c, 0) == EQUAL)? INF_ROOTS: ZERO_ROOTS;
+    if (comparing_doubles(fulldataforsolving->b, 0) == EQUAL)
+            nroots = (comparing_doubles(fulldataforsolving->c, 0) == EQUAL)? INF_ROOTS: ZERO_ROOTS;
 
         else{
-            *x1 = -c / b;
-            return ONE_ROOT;
+            double x1 = -fulldataforsolving->c / fulldataforsolving->b;
+            fulldataforsolving->x1 = x1;
+
+            nroots = ONE_ROOT;
         }
+    fulldataforsolving->nroots = nroots;    
+    return 0;
 }
 
-NumOfRoots solvation_of_square_equation (const double a, const double b, const double c, double *const x1, double *const x2){
+int solvation_of_square_equation (DataForSolvingEquetions* fulldataforsolving){
 
-    assert(x1 != nullptr);
-    assert(x2 != nullptr);
-    assert(x1 != x2);
+    assert(fulldataforsolving != nullptr);
 
-    double diskr = b*b - 4*a*c;
+    int nroots = 0;
 
-        if (comparing_doubles(diskr, 0) == EQUAL){
-            *x1 = *x2 = -b / (2*a);
-
-            return ONE_ROOT;
-        }
-        else if (comparing_doubles(diskr, 0) == LESS) {
-            return ZERO_ROOTS;
-        }
-        else{
-            *x1 = (-b + sqrt(diskr))/(2*a);
-            *x2 = (-b - sqrt(diskr))/(2*a);
-            return TWO_ROOTS;
-        }
-}
-
-int unittest (DataForChecking* test) {
-
-
+    double diskr = fulldataforsolving->b*fulldataforsolving->b - 4*fulldataforsolving->a*fulldataforsolving->c;
+    
     double x1 = 0, x2 = 0;
 
-    int nroots = solvation_of_equation(test->a, test->b, test->c, &x1, &x2);
-    if (nroots != test->nroots_expected || x1 != test->x1_expected || x2 != test->x2_expected) {
+        if (comparing_doubles(diskr, 0) == EQUAL){
+            
+            x1 = x2 = -fulldataforsolving->b / (2*fulldataforsolving->a);
+
+            fulldataforsolving->x1 = x1;
+            fulldataforsolving->x2 = x2;
+
+            nroots = ONE_ROOT;
+        }
+        else if (comparing_doubles(diskr, 0) == LESS) {
+            nroots = ZERO_ROOTS;
+        }
+        else{
+            x1 = (-fulldataforsolving->b + sqrt(diskr))/(2*fulldataforsolving->a);
+            x2 = (-fulldataforsolving->b - sqrt(diskr))/(2*fulldataforsolving->a);
+
+            fulldataforsolving->x1 = x1;
+            fulldataforsolving->x2 = x2;
+
+            nroots = TWO_ROOTS;
+        }
+
+    return 0;
+}
+
+int unittest (DataForSolvingEquetions* fulldataforsolving, DataForChecking* test) {
+
+    assert(fulldataforsolving != nullptr);
+    assert(test != nullptr);
+
+    DataForChecking test = {};
+
+    if (test->nroots != fulldataforsolving->nroots || test->x1_exp != fulldataforsolving->x1 || test->x2_exp != fulldataforsolving->x2) {
         printf("error test %d: a = %lg, b = %lg, c = %lg, x1 = %lg, x2 = %lg, nroots = %d\n"
         "expected x1 = %lg, x2 = %lg, nroots = %d\n",
-        test->testnum, test->a, test->b, test->c, x1, x2, nroots,
-        test->x1_expected, test->x2_expected, test->nroots_expected);
+        fulldataforsolving->testnum, fulldataforsolving->a, fulldataforsolving->b, fulldataforsolving->c, fulldataforsolving->x1, fulldataforsolving->x2, fulldataforsolving->nroots,
+        test->x1_exp, test->x2_exp, test->nroots);
     }
 }
 
 int launch_tests () {
 
-    #ifdef TEST
-    DataForChecking test1 = {.testnum = 1, .a = 1,  .b =  -5, .c =   6, .x1_expected =    3, .x2_expected =  2, .nroots_expected =  2};
-    DataForChecking test2 = {.testnum = 2, .a = 1,  .b =  -4, .c =   4, .x1_expected =    2, .x2_expected =  2, .nroots_expected =  1};
-    DataForChecking test3 = {.testnum = 3, .a = 1,  .b =   2, .c =   4, .x1_expected =    0, .x2_expected =  0, .nroots_expected =  0};
-    DataForChecking test4 = {.testnum = 4, .a = 1,  .b = 1.5, .c = 0.5, .x1_expected = -0.5, .x2_expected = -1, .nroots_expected =  2};
-    DataForChecking test5 = {.testnum = 5, .a = 0,  .b =   0, .c =   0, .x1_expected =    0, .x2_expected =  0, .nroots_expected = -1};
-    #endif
+    DataForChecking ch_test1 = {.testnum = 1, .a = 1,  .b =  -5, .c =   6, .x1_exp =    3, .x2_exp =  2, .nroots =  2};
+    DataForChecking ch_test2 = {.testnum = 2, .a = 1,  .b =  -4, .c =   4, .x1_exp =    2, .x2_exp =  2, .nroots =  1};
+    DataForChecking ch_test3 = {.testnum = 3, .a = 1,  .b =   2, .c =   4, .x1_exp =    0, .x2_exp =  0, .nroots =  0};
+    DataForChecking ch_test4 = {.testnum = 4, .a = 1,  .b = 1.5, .c = 0.5, .x1_exp = -0.5, .x2_exp = -1, .nroots =  2};
+    DataForChecking ch_test5 = {.testnum = 5, .a = 0,  .b =   0, .c =   0, .x1_exp =    0, .x2_exp =  0, .nroots = -1};
+  
+    DataForSolvingEquetions test1 = {.testnum = 1, .a = 1,  .b =  -5, .c =   6, .nroots =  2};
+    DataForSolvingEquetions test2 = {.testnum = 2, .a = 1,  .b =  -4, .c =   4, .nroots =  1};
+    DataForSolvingEquetions test3 = {.testnum = 3, .a = 1,  .b =   2, .c =   4, .nroots =  0};
+    DataForSolvingEquetions test4 = {.testnum = 4, .a = 1,  .b = 1.5, .c = 0.5, .nroots =  2};
+    DataForSolvingEquetions test5 = {.testnum = 5, .a = 0,  .b =   0, .c =   0, .nroots = -1};
     
-    unittest(test1);
-    unittest(test2);
-    unittest(test3);
-    unittest(test4);
-    unittest(test5);
+    unittest(&test1, &ch_test1);
+    unittest(&test2, &ch_test2);
+    unittest(&test3, &ch_test3);
+    unittest(&test4, &ch_test4);
+    unittest(&test5, &ch_test5);
 
     return 0;
 }
@@ -285,24 +309,31 @@ int getting_greater_root (double* x1, double* x2) {
     assert(x1 != x2);
 
     if (comparing_doubles(*x1, *x2) == LESS) {
-        double temp = 0;
-
-        temp = *x1;
-        *x1 = *x2;
-        *x2 = temp;
+        swap_roots(x1, x2);
     }
 
     return 0;
 }
 
-int filling_out_the_structure_tests(DataForSolvingEquetions nameofstructure) {
+int initialising_structure (DataForSolvingEquetions* fulldataforsolving) {
     
-    nameofstructure.a = NAN;
-    nameofstructure.b = NAN;
-    nameofstructure.c = NAN;
-    nameofstructure.x1 = ;////это указатели, их никак не заполнять?
-    nameofstructure.x2 = ;
-
+    fulldataforsolving->a  = 1;
+    fulldataforsolving->b  = NAN;
+    fulldataforsolving->c  = NAN;
+    fulldataforsolving->x1 = NAN;
+    fulldataforsolving->x2 = NAN;
+    
+    printf("%lg", fulldataforsolving->a);
     return 0;
 
+}
+
+int swap_roots (double* x1, double* x2) {
+    double temp = 0;
+
+    temp = *x1;
+    *x1 = *x2;   
+    *x2 = temp;
+
+    return 0;
 }
