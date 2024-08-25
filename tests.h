@@ -1,7 +1,12 @@
+/*!
+ *\file
+ *\brief contains functions declaration, that need for test mode
+ */
+
 #ifndef TESTS_H
 #define TESTS_H
 
-#include "TXLib.h"
+#include "colourlib.h"
 
 #include "output.h"
 

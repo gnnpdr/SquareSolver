@@ -1,8 +1,16 @@
+/*!
+ *\file
+ *\brief contains functions declaration, that need for test mode
+ */
+
 #ifndef SOLVE_H
 #define SOLVE_H
 
 #include "get_coef.h"
 
+/*!
+ *\brief enum describes amount of roots of the equation
+ */
 enum NumOfRoots 
 { 
     ZERO_ROOTS,    ///< equation does not have roots
@@ -11,6 +19,9 @@ enum NumOfRoots
     INF_ROOTS = -1 ///< equation has infinite number of roots
 }; 
  
+ /*!
+  *\brief enum describes difference between two doubles
+  */
 enum ComparisonResult 
 { 
     LESS,    ///< first double is less than the second
@@ -20,16 +31,16 @@ enum ComparisonResult
 
 /*!
  *\brief fulls out the struct by roots and number of roots
- *\param [in] fulldataforsolving structure includes all information for solving
-*/
+ *\param[in,out] fulldataforsolving structure includes all information for solving
+ */
 void solve_the_equation (DataForSolvingEquations* fulldataforsolving); 
 
 /*!
  *\brief compares doubles 
- *\param [in] a first double for comparing
- *\param [in] b second double for comparing
+ *\param[in] a first double for comparing
+ *\param[in] b second double for comparing
  *\return comparison result
-*/
+ */
 ComparisonResult comparing_doubles (const double a, const double b); 
 
 #endif //SOLVE_H

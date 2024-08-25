@@ -3,7 +3,6 @@
 
 void initialising_structure (DataForSolvingEquations* fulldataforsolving) 
 { 
-
     fulldataforsolving->a      = NAN;
     fulldataforsolving->b      = NAN;
     fulldataforsolving->c      = NAN;

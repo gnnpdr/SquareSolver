@@ -4,15 +4,15 @@
 
 /*!
  *\brief controls x1 is greater than x2
- *\param [in] x1 pointer to the first root of equation
- *\param [in] x2 pointer to the second root of equation
+ *\param[in] x1 pointer to the first root of equation
+ *\param[in] x2 pointer to the second root of equation
  */
 static void getting_greater_root (double* x1, double* x2);
 
 /*!
  *\brief changes the roots if necessary
- *\param [in] x1 pointer to the first root of equation
- *\param [in] x2 pointer to the second root of equation
+ *\param[in,out] x1 pointer to the first root of equation
+ *\param[in,out] x2 pointer to the second root of equation
  */
 static void swap_roots (double* x1, double* x2); 
 
@@ -53,8 +53,6 @@ void getting_greater_root (double* x1, double* x2)
     assert(x2 != nullptr); 
     assert(x1 != x2); 
     
-    assert( isfinite( *x1));
-    assert( isfinite( *x2));
     if (comparing_doubles(*x1, *x2) == LESS) 
     { 
         swap_roots(x1, x2); 

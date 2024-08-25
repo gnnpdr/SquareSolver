@@ -4,13 +4,13 @@
 
 /*!
  *\brief solves equation in case it is linear 
- *\param [in] fulldataforsolving structure includes all information for solving
+ *\param[in,out] fulldataforsolving structure includes all information for solving
  */
 static void solve_of_linear_equation (DataForSolvingEquations* fulldataforsolving); 
 
 /*!
  *\brief solves equation in case it is square 
- *\param [in] fulldataforsolving structure includes all information for solving
+ *\param[in,out] fulldataforsolving structure includes all information for solving
  */
 static void solve_of_square_equation (DataForSolvingEquations* fulldataforsolving);
 
@@ -35,7 +35,7 @@ void solve_the_equation (DataForSolvingEquations* fulldataforsolving)
  
 } 
  
-void solve_of_linear_equation (DataForSolvingEquations* fulldataforsolving)
+static void solve_of_linear_equation (DataForSolvingEquations* fulldataforsolving)
 {
     assert(fulldataforsolving != nullptr);  
  
@@ -45,11 +45,10 @@ void solve_of_linear_equation (DataForSolvingEquations* fulldataforsolving)
     c = fulldataforsolving->b;
 
     int nroots = 0;
-    assert( isfinite(b));
-    assert( isfinite(c));
+
     if (comparing_doubles(b, 0) == EQUAL)
 
-            nroots = (comparing_doubles(c, 0) == EQUAL) ? nroots = INF_ROOTS : nroots = ZERO_ROOTS; 
+            nroots = (comparing_doubles(c, 0) == EQUAL) ? INF_ROOTS : ZERO_ROOTS; 
  
     else
     { 
@@ -64,7 +63,7 @@ void solve_of_linear_equation (DataForSolvingEquations* fulldataforsolving)
     fulldataforsolving->nroots = nroots;
 } 
 
-void solve_of_square_equation (DataForSolvingEquations* fulldataforsolving)
+static void solve_of_square_equation (DataForSolvingEquations* fulldataforsolving)
 {
 
     assert(fulldataforsolving != nullptr);
@@ -77,12 +76,10 @@ void solve_of_square_equation (DataForSolvingEquations* fulldataforsolving)
     b = fulldataforsolving->b;
     c = fulldataforsolving->c;
 
-    double diskr    = b*b - 4*a*c;
-    double discr_sq = sqrt(diskr);
+    double diskr = b*b - 4*a*c;
     
     double x1 = 0, x2 = 0;
 
-    assert(isfinite( diskr));
     if (comparing_doubles(diskr, 0) == EQUAL)
     {
         x1 = x2 = -b / (2*a);
@@ -98,7 +95,7 @@ void solve_of_square_equation (DataForSolvingEquations* fulldataforsolving)
     }
     else
     {
-        assert( isfinite( discr_sq));
+        double discr_sq = sqrt(diskr);
         x1 = (-b + discr_sq)/(2*a);
         x2 = (-b - discr_sq)/(2*a);
 

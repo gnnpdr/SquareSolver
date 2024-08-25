@@ -2,29 +2,35 @@
 
 #include "get_coef.h"
 
+
 /*!
- *\brief moves the position of input of the '\n' or EOF symbol
+ *\brief enum describes the result of checking what is sbmitted for input
+ */
+enum Result
+{
+    OK,     ///< user has entered something that can be used to solve
+    WRONG   ///< there is a problem in users enter
+};
+
+
+/*!
+ *\brief moves the position of input of the '\n' or EOF symbol and anylizes buffer 
  */
 static void clean_buffer (void);
 
 /*!
  *\brief analyzes every single coefficient and ask for new enter in case of error
- *\param [in] a pointer to the coefficient
+ *\param[in,out] a pointer to the coefficient
  */
 static void control_of_input_reload_if_error (double *const a); 
 
 /*!
- *\brief analyzes if the enter before space is a number 
- *\param [in] a pointer to the coefficient
+ *\brief analyzes the coefficient
+ *\param[in,out] a pointer to the coefficient
+ *\param[in,out] good_enter means is there other symbols after a number
+ *\return result of checking the enter
  */
-static Result first_check (double *const a);
-
-/*!
- *\brief analyzes if the enter is a number or a wrong enter or multiple number (it means user did not understand the task) 
- *\param [in] a pointer to the coefficient
- */
-static Result sec_check(double* a);
-
+static Result check (double *const a, bool good_enter);
 
 void getting_coefficients (DataForSolvingEquations* fulldataforsolving)
 {
@@ -43,86 +49,46 @@ void getting_coefficients (DataForSolvingEquations* fulldataforsolving)
     fulldataforsolving->c = c;
 }
  
-void control_of_input_reload_if_error (double *const a)
+static void control_of_input_reload_if_error (double *const a)
 {
     assert(a != nullptr); 
 
     int cnt = 0;
+    bool good_enter = false;
 
-    while (first_check(&a) != OK && cnt < 3) 
+    while (there_is_symbol != true && cnt < 3) 
     {
-        cnt++;
+        printf("enter again\n");
+        check(a, good_enter);
     }
 }
 
-Result first_check(double* a)
+void check(double *const a, bool good_enter)
 {
     assert(a != nullptr); 
 
-    if (scanf("%lg", &a) != 1)
-    {
-        printf("enter number\n");
-        clean_buffer();
-        return WRONG;
-    }
-    else
-    {
-        return(sec_check(a));
-    }
+    scanf("%lg", a);
+    if (clean_buffer() == OK)
+        good_enter == true;
+
 }
 
-Result sec_check(double* a)
-{
-    assert(a != nullptr); 
 
-    int space_cnt = 0;
-    bool alpha = false;
-    bool digit = false;
-    int ch = getchar();
-
-
-    while (ch != '\n' && ch != EOF)
-    {
-        if (isalpha(ch))
-        {
-            alpha = true;
-        }
-        else if (isspace(ch))
-        {
-            space_cnt++;
-        }
-        else if (isdigit(ch))
-        {
-            digit = true;
-        }
-        ch = getchar();
-    }
-
-    if (alpha == false)
-    {
-        if (space_cnt == 2 && digit == true)
-        {
-            printf("enter coefficients separately\n");
-            return WRONG;
-        }
-        else
-        {
-            printf("all right\n");
-            return OK;
-        }
-    }
-    else
-    {
-        printf("enter again sec check error\n");
-        return WRONG;
-    }
-}
-
-void clean_buffer()
+static Result clean_buffer()
 {
     int ch = 0;
+    int symb_cnt = 0;
+
     while (ch != '\n' && ch != EOF)
     {
+        if (isspace(ch) == false)
+            symb_cnt++;
+    
         ch = getchar();
     }
+
+    if (symb_cnt != 0)
+        return WRONG;
+    else
+        return OK;
 }

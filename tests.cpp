@@ -5,12 +5,12 @@
 
 /*!
  *\brief starts a unitest and output an error message if necessary
- *\param [in] num_of_test means number of unittest
- *\param [in] fulldataforsolving structure includes all information for solving
+ *\param[in] num_of_test means number of unittest
+ *\param[in,out] fulldataforsolving structure includes all information for solving
  */
 static void unittest (int num_of_test, DataForSolvingEquations* fulldataforsolving);
 
-const int AMOUNT_OF_TESTS = 5; ///< amount of unittests
+static const int AMOUNT_OF_TESTS = 5; ///< amount of unittests
 
 void launch_tests () 
 { 
@@ -31,7 +31,7 @@ void launch_tests ()
  
 } 
 
-void unittest (const int num_of_test, DataForSolvingEquations* fulldataforsolving) 
+static void unittest (const int num_of_test, DataForSolvingEquations* fulldataforsolving) 
 { 
     assert(fulldataforsolving != nullptr); 
 
@@ -52,19 +52,15 @@ void unittest (const int num_of_test, DataForSolvingEquations* fulldataforsolvin
   
     if (x1_initial != x1_end || x2_initial != x2_end || nroots_initial != nroots_end)
     {
-        txSetConsoleAttr (FOREGROUND_RED);
-        printf("error test %d: a = %lg, b = %lg, c = %lg, x1 = %lg, x2 = %lg, nroots = %d\n" 
+        PRINTFRED("error test %d: a = %lg, b = %lg, c = %lg, x1 = %lg, x2 = %lg, nroots = %d\n" 
         "expected x1 = %lg, x2 = %lg, nroots = %d\n", 
         num_of_test, fulldataforsolving->a, fulldataforsolving->b, fulldataforsolving->c,
          x1_end, x2_end, nroots_end, 
-        x1_initial, x2_initial, nroots_initial); 
-        txSetConsoleAttr (FOREGROUND_LIGHTGRAY);
+        x1_initial, x2_initial, nroots_initial);
     }
     else
     {
-        txSetConsoleAttr (FOREGROUND_LIGHTGREEN);
-        printf("congratulations! no errors!");
-        txSetConsoleAttr (FOREGROUND_LIGHTGRAY);
+        PRINTFGREEN("congratulations! no errors!");
     }
     
 } 

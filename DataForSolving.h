@@ -1,3 +1,7 @@
+/*!
+ *\file
+ *\brief contains functions declaration, that need for test mode
+ */
 
 #ifndef INIT_H
 #define INIT_H
@@ -20,7 +24,8 @@ struct DataForSolvingEquations
 };
 
 /*!
- * \brief fulls out the struct by NANs
+ *\brief fulls out the struct by NANs
+ *\param[in,out] fulldataforsolving structure includes all information for solving
  */ 
 void initialising_structure(DataForSolvingEquations* fulldataforsolving);
 
