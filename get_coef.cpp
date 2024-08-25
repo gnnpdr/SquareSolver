@@ -55,8 +55,10 @@ void control_of_input_reload_if_error (double *const a)
     }
 }
 
-Result first_check(double* a) 
+Result first_check(double* a)
 {
+    assert(a != nullptr); 
+
     if (scanf("%lg", &a) != 1)
     {
         printf("enter number\n");
@@ -71,6 +73,8 @@ Result first_check(double* a)
 
 Result sec_check(double* a)
 {
+    assert(a != nullptr); 
+
     int space_cnt = 0;
     bool alpha = false;
     bool digit = false;

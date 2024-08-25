@@ -4,6 +4,12 @@
 #include <assert.h> 
 #include "DataForSolving.h"
 
+enum Result
+{
+    OK,
+    WRONG
+};
+
 /*!
  *\brief fulls out the struct by coefficients
  *\param [in] fulldataforsolving structure includes all information for solving
