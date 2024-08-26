@@ -18,6 +18,10 @@ static const double EPS = 1e-10; ///< acceptable difference of doubles
 
 void solve_the_equation (DataForSolvingEquations* fulldataforsolving)
 {
+    assert(!isnan(fulldataforsolving->a));
+    assert(!isnan(fulldataforsolving->b));
+    assert(!isnan(fulldataforsolving->c));
+    
     assert(fulldataforsolving != nullptr); 
 
     double a = 0;

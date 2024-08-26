@@ -15,14 +15,14 @@ static const int AMOUNT_OF_TESTS = 5; ///< amount of unittests
 void launch_tests () 
 { 
     int cnt_test = 0;
-    
+
     DataForSolvingEquations test [AMOUNT_OF_TESTS] = 
     {
-    {.a = 1,  .b =  -5, .c =   6, .x1 =    3, .x2 =  2, .nroots =  2},
-    {.a = 1,  .b =  -4, .c =   4, .x1 =    2, .x2 =  2, .nroots =  1},
-    {.a = 1,  .b =   2, .c =   4, .x1 =    0, .x2 =  0, .nroots =  0},
-    {.a = 1,  .b = 1.5, .c = 0.5, .x1 = -0.5, .x2 = -1, .nroots =  2},
-    {.a = 0,  .b =   0, .c =   0, .x1 =    0, .x2 =  0, .nroots = -1},
+        {.a = 1,  .b =  -5, .c =   6, .x1 =    3, .x2 =  2, .nroots =  2},
+        {.a = 1,  .b =  -4, .c =   4, .x1 =    2, .x2 =  2, .nroots =  1},
+        {.a = 1,  .b =   2, .c =   4, .x1 =    0, .x2 =  0, .nroots =  0},
+        {.a = 1,  .b = 1.5, .c = 0.5, .x1 = -0.5, .x2 = -1, .nroots =  2},
+        {.a = 0,  .b =   0, .c =   0, .x1 =    0, .x2 =  0, .nroots = -1},
     };
 
     for (int num_of_test = 0; num_of_test < AMOUNT_OF_TESTS; num_of_test++)
