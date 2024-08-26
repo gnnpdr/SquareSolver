@@ -20,11 +20,9 @@ void solve_the_equation (DataForSolvingEquations* fulldataforsolving)
 {
     assert(fulldataforsolving != nullptr); 
 
-    double a = 0, b = 0, c = 0;
+    double a = 0;
 
     a = fulldataforsolving->a;
-    b = fulldataforsolving->b;
-    c = fulldataforsolving->c;
     
     if (comparing_doubles(a, 0) == EQUAL)      
             solve_of_linear_equation (fulldataforsolving); 
