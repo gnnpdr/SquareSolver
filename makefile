@@ -21,4 +21,6 @@ $(TARGET): $(OBJECTS)
 clean:
 	rm -rf *.o $(TARGET)
 
-
+folder_formation:
+	if(!mkdir("C:\Users\User\Desktop\Новая папка", 0777))
+		mkdir("C:\Users\User\Desktop\Новая папка", 0777);
