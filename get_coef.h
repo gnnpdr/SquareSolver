@@ -7,7 +7,17 @@
 #define COEFS_H
 
 #include <assert.h> 
+#include <ctype.h>
 #include "DataForSolving.h"
+
+/*!
+ *\brief enum describes the result of checking what is sbmitted for input
+ */
+enum Result
+{
+    OK,     ///< user has entered something that can be used to solve
+    WRONG   ///< there is a problem in users enter
+};
 
 
 /*!

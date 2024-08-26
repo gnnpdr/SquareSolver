@@ -64,6 +64,7 @@ void swap_roots (double* x1, double* x2)
 
     assert (x1 != nullptr);
     assert (x2 != nullptr);
+    assert(x1 != x2); 
 
     double temp = 0; 
  
