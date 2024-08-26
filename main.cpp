@@ -5,7 +5,7 @@
 
 #include <stdio.h> 
 
-#include "DataForSolving.h"
+#include "data_for_solving.h"
 #include "get_coef.h"
 #include "solve.h"
 #include "output.h"

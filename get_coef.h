@@ -8,7 +8,7 @@
 
 #include <assert.h> 
 #include <ctype.h>
-#include "DataForSolving.h"
+#include "data_for_solving.h"
 
 /*!
  *\brief enum describes the result of checking what is sbmitted for input
